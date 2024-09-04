@@ -24,13 +24,11 @@ credential = ClientSecretCredential(tenant_id, client_id, client_secret)
 blob_service_client = BlobServiceClient(account_url=account_url, credential=credential)
 secret_client = SecretClient(vault_url=key_vault_url, credential=credential)
 
-# Retrieve the password from Azure Key Vault
-password = secret_client.get_secret(secret_name).value
 
 app = func.FunctionApp()
 
 @app.event_grid_trigger(arg_name="azeventgrid")
-def EventGridTrigger2(azeventgrid: func.EventGridEvent):
+def EventGridTrigger1(azeventgrid: func.EventGridEvent):
     logging.info('Python EventGrid trigger processed an event')
     
     # Extract the blob details from the event data
