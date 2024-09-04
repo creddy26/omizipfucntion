@@ -1,6 +1,18 @@
 {
   "version": "2.0",
   "logging": {
-    "fileLoggingMode": "always"
+    "logLevel": {
+      "Function": "Debug",
+      "Host.Results": "Information",
+      "Host.Aggregator": "Information",
+      "Function.HttpTrigger": "Information"
+    }
+  },
+  "functionTimeout": "00:05:00",
+  "extensions": {
+    "eventGrid": {
+      "maxEventsPerBatch": 50,
+      "preferredBatchSizeInKilobytes": 1024
+    }
   }
 }
