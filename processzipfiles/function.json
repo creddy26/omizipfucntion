@@ -3,8 +3,8 @@
     {
       "type": "eventGridTrigger",
       "name": "azeventgrid",
-      "direction": "in"
+      "direction": "in",
+      "authLevel": "function"
     }
-  ],
-  "scriptFile": "__init__.py"
+  ]
 }
