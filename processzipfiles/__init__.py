@@ -1,21 +1,76 @@
-The provided Azure Function code listens for Event Grid triggers and processes password-protected zip files stored in Azure Blob Storage. Below is an explanation of key components and how the code works:
+import azure.functions as func
+import logging
+import pyzipper
+import io
+from azure.storage.blob.aio import BlobServiceClient
+from azure.identity.aio import ClientSecretCredential
+from azure.keyvault.secrets.aio import SecretClient
+import asyncio
 
-Service Principal & Authentication:
+# Service Principal details to connect to storage account
+tenant_id = 'e28d23e3-803d-418d-a720-c0bed39f77b6'
+client_id = '3772ed4b-6645-448a-8ba3-4efcdcc76b9e'
+client_secret = 'S3V8Q~Z0Sd5eVepKvU1lxRYFFLX4FIIkeSXFZaJl'
+account_url = 'https://storagecc3.blob.core.windows.net'
 
-The function authenticates using Azure's ClientSecretCredential, which uses the provided tenant ID, client ID, and client secret to connect to Azure Blob Storage and Key Vault.
-Blob Storage & Key Vault Integration:
+# Azure Key Vault details where .zip password file is stored
+key_vault_url = 'https://kvomifile.vault.azure.net/'
+secret_name = 'passwordfile'
 
-The Blob Storage client (BlobServiceClient) is used to interact with the blobs, while SecretClient from Key Vault retrieves the password for the zip files.
-Event Grid Trigger:
+# Create a credential object to connect to storage account using service principal account
+credential = ClientSecretCredential(tenant_id, client_id, client_secret)
 
-The function triggers upon receiving an Event Grid event. The event data contains the URL of the blob that was added or modified.
-Zip File Handling:
+# Create BlobServiceClient and SecretClient objects
+blob_service_client = BlobServiceClient(account_url=account_url, credential=credential)
+secret_client = SecretClient(vault_url=key_vault_url, credential=credential)
 
-The function checks if the blob is a zip file and then attempts to extract it using pyzipper, which supports AES-encrypted zip files.
-The password is retrieved from Azure Key Vault to unlock the zip file.
-Extracting Files:
+async def get_secret_value(secret_client, secret_name):
+    secret = await secret_client.get_secret(secret_name)
+    return secret.value
 
-Once the correct password is used, files inside the zip are extracted and uploaded to an extracted/input_files/ folder within the same container.
-Archiving the Processed Zip:
+async def process_zip_file(container_client, blob_name, password):
+    blob_client = container_client.get_blob_client(blob_name)
+    blob_stream = await blob_client.download_blob()
+    zip_stream = io.BytesIO(await blob_stream.readall())
+    
+    try:
+        with pyzipper.AESZipFile(zip_stream, 'r', compression=pyzipper.ZIP_DEFLATED) as zf:
+            zf.setpassword(password.encode('utf-8'))
+            file_list = zf.namelist()
+            logging.info(f"Password is correct for {blob_name}. Extracting {len(file_list)} files...")
+            await asyncio.gather(*[
+                upload_extracted_file(container_client, file_name, zf.read(file_name))
+                for file_name in file_list
+            ])
+            await archive_blob(container_client, blob_name)
+    
+    except RuntimeError:
+        logging.error(f"Incorrect password for {blob_name}. Skipping this file.")
 
-The processed zip file is moved to an archived/ folder by starting a copy operation.
+async def upload_extracted_file(container_client, file_name, data):
+    extracted_blob_name = f'extracted/input_files/{file_name}'
+    extracted_blob_client = container_client.get_blob_client(extracted_blob_name)
+    await extracted_blob_client.upload_blob(data, overwrite=True)
+    logging.info(f"Extracted and uploaded {file_name}")
+
+async def archive_blob(container_client, blob_name):
+    archived_blob_name = f'archived/{blob_name}'
+    archived_blob_client = container_client.get_blob_client(archived_blob_name)
+    blob_client = container_client.get_blob_client(blob_name)
+    await archived_blob_client.start_copy_from_url(blob_client.url)
+    logging.info(f"Started archiving {blob_name}")
+
+# EventGrid trigger function definition
+async def main(azeventgrid: func.EventGridEvent):
+    logging.info('Python EventGrid trigger processed an event')
+    data = azeventgrid.get_json()
+    blob_url = data['url']
+    container_name = blob_url.split('/')[-2]
+    blob_name = blob_url.split('/')[-1]
+    if blob_name.endswith('.zip'):
+        logging.info(f"Blob {blob_name} is a zip file. Proceeding with extraction.")
+        container_client = blob_service_client.get_container_client(container_name)
+        password = await get_secret_value(secret_client, secret_name)
+        await process_zip_file(container_client, blob_name, password)
+    else:
+        logging.info(f"File {blob_name} is not a .zip file and will not be processed.")
