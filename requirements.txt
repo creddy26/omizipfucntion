@@ -6,4 +6,5 @@ azure-functions
 azure-storage-blob
 azure-identity
 azure-keyvault-secrets
+aiohttp
 pyzipper
