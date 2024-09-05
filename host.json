@@ -1,3 +1,29 @@
 {
-  "version": "2.0"
+  "version": "2.0",
+  "extensions": {
+    "http": {
+      "routePrefix": ""
+    },
+    "queues": {
+      "maxPollingInterval": "00:00:02",
+      "batchSize": 16,
+      "newBatchThreshold": 8
+    }
+  },
+  "logging": {
+    "applicationInsights": {
+      "samplingSettings": {
+        "isEnabled": true,
+        "excludedTypes": "Request"
+      }
+    },
+    "logLevel": {
+      "Function": "Information",
+      "Host": {
+        "Function": "Information",
+        "Worker": "Information"
+      },
+      "default": "Warning"
+    }
+  }
 }
