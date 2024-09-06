@@ -1,10 +1,12 @@
 {
   "bindings": [
     {
-      "type": "eventGridTrigger",
-      "name": "azeventgrid",
+      "name": "myblob",
+      "type": "blobTrigger",
       "direction": "in",
-      "authLevel": "admin"
+      "path": "datafiles/input_files/{name}",
+      "connection": "AzureWebJobsStorage"
     }
-  ]
+  ],
+  "disabled": false
 }
