@@ -4,7 +4,7 @@
       "type": "eventGridTrigger",
       "name": "azeventgrid",
       "direction": "in",
-      "authLevel": "anonymous"
+      "authLevel": "admin"
     }
   ]
 }
