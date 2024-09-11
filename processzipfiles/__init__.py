@@ -6,6 +6,7 @@ from azure.storage.blob import BlobServiceClient
 from azure.identity import ClientSecretCredential
 from azure.keyvault.secrets import SecretClient
 import time
+import os
 
 # SP account details to connect to storage account
 tenant_id = os.getenv('AZURE_TENANT_ID')
