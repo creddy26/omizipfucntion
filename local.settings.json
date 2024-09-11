@@ -2,8 +2,8 @@
   "IsEncrypted": false,
   "Values": {
     "AZURE_TENANT_ID": "e28d23e3-803d-418d-a720-c0bed39f77b6",
-    "AZURE_CLIENT_ID": "3772ed4b-6645-448a-8ba3-4efcdcc76b9e",
-    "AZURE_CLIENT_SECRET": "S3V8Q~Z0Sd5eVepKvU1lxRYFFLX4FIIkeSXFZaJl",
+    "SP_CLIENT_ID": "3772ed4b-6645-448a-8ba3-4efcdcc76b9e",
+    "SP_CLIENT_SECRET": "S3V8Q~Z0Sd5eVepKvU1lxRYFFLX4FIIkeSXFZaJl",
     "AZURE_STORAGE_ACCOUNT_URL": "https://storagecc3.blob.core.windows.net",
     "AZURE_KEY_VAULT_URL": "https://kvomifile.vault.azure.net/",
     "AZURE_KEY_VAULT_SECRET_NAME": "passwordfile",
