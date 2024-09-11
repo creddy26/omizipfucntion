@@ -8,14 +8,14 @@ from azure.keyvault.secrets import SecretClient
 import time
 
 # SP account details to connect to storage account
-tenant_id = 'e28d23e3-803d-418d-a720-c0bed39f77b6'
-client_id = '3772ed4b-6645-448a-8ba3-4efcdcc76b9e'
-client_secret = 'S3V8Q~Z0Sd5eVepKvU1lxRYFFLX4FIIkeSXFZaJl'
-account_url = 'https://storagecc3.blob.core.windows.net'
+tenant_id = os.getenv('AZURE_TENANT_ID')
+client_id = os.getenv('SP_CLIENT_ID')
+client_secret = os.getenv('SP_CLIENT_SECRET')
+account_url = os.getenv('AZURE_STORAGE_ACCOUNT_URL')
 
 # Azure Key Vault details
-key_vault_url = 'https://kvomifile.vault.azure.net/'  
-secret_name = 'passwordfile'  
+key_vault_url = os.getenv('AZURE_KEY_VAULT_URL')
+secret_name = os.getenv('AZURE_KEY_VAULT_SECRET_NAME') 
 
 # Create a credential and clients
 credential = ClientSecretCredential(tenant_id, client_id, client_secret)
