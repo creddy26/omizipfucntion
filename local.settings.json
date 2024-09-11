@@ -1,14 +1,14 @@
 {
   "IsEncrypted": false,
   "Values": {
-    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
-    "FUNCTIONS_WORKER_RUNTIME": "python",
     "AZURE_TENANT_ID": "e28d23e3-803d-418d-a720-c0bed39f77b6",
     "AZURE_CLIENT_ID": "3772ed4b-6645-448a-8ba3-4efcdcc76b9e",
     "AZURE_CLIENT_SECRET": "S3V8Q~Z0Sd5eVepKvU1lxRYFFLX4FIIkeSXFZaJl",
-    "STORAGE_ACCOUNT_URL": "https://storagecc3.blob.core.windows.net",
-    "KEY_VAULT_URL": "https://kvomifile.vault.azure.net/",
-    "KEY_VAULT_SECRET_NAME": "passwordfile"
+    "AZURE_STORAGE_ACCOUNT_URL": "https://storagecc3.blob.core.windows.net",
+    "AZURE_KEY_VAULT_URL": "https://kvomifile.vault.azure.net/",
+    "AZURE_KEY_VAULT_SECRET_NAME": "passwordfile",
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "FUNCTIONS_WORKER_RUNTIME": "python",
+    "storagecc3_STORAGE": "DefaultEndpointsProtocol=https;AccountName=storagecc3;AccountKey=nuPJXgu58Ii2PNn9dZSoe2VgTeH/35sDYoOYhOApcid12pCBv8sQjLBJ4Gf2KsECYdkJPgXaOBDE+ASt9JVsdA==;EndpointSuffix=core.windows.net"
   }
 }
-
